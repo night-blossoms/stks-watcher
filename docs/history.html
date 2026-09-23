@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>History — Commodity Signal Tracker</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="wrap">
+    <div id="nav-slot"></div>
+    <h1>Trade history</h1>
+    <p class="subtitle">Closed dummy positions and how the rules actually performed</p>
+
+    <section>
+      <h2>Summary</h2>
+      <div class="stat-grid" id="summary"></div>
+    </section>
+
+    <section>
+      <h2>Accuracy by pair</h2>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr><th>Pair</th><th class="num">Trades</th><th class="num">Wins</th>
+                <th class="num">Accuracy</th><th class="num">Total P&amp;L ₹</th></tr>
+          </thead>
+          <tbody id="by-pair-body"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h2>All closed trades</h2>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Pair</th><th>Signal</th><th>Entry date</th><th class="num">Entry</th>
+              <th>Exit date</th><th class="num">Exit</th><th class="num">P&amp;L %</th><th class="num">P&amp;L ₹</th>
+            </tr>
+          </thead>
+          <tbody id="all-body"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <footer id="footer"></footer>
+  </div>
+
+<script src="common.js"></script>
+<script>
+async function main() {
+  document.getElementById('nav-slot').innerHTML = Tracker.renderNav('history.html');
+  let data;
+  try {
+    data = await Tracker.loadData();
+  } catch (e) {
+    document.getElementById('summary').innerHTML = '<div class="empty">Could not load data.json yet.</div>';
+    return;
+  }
+
+  const s = data.summary;
+  document.getElementById('summary').innerHTML = [
+    ['Closed trades', s.closed_trades],
+    ['Wins', s.wins],
+    ['Accuracy', s.accuracy_pct == null ? '—' : s.accuracy_pct + '%'],
+    ['Total P&L', Tracker.fmtInr(s.total_pnl_inr)],
+    ['Avg P&L / trade', Tracker.fmtPct(s.avg_pnl_pct)],
+  ].map(([label, value]) => `
+    <div class="stat-tile"><p class="stat-label">${label}</p><p class="stat-value">${value}</p></div>
+  `).join('');
+
+  // per-pair accuracy breakdown
+  const byPair = {};
+  for (const t of data.closed_trades) {
+    const key = t.pair_id;
+    byPair[key] ??= { commodity: t.commodity, stock: t.stock, n: 0, wins: 0, pnl: 0 };
+    byPair[key].n += 1;
+    if (t.pnl_inr > 0) byPair[key].wins += 1;
+    byPair[key].pnl += (t.pnl_inr || 0);
+  }
+  const pairBody = document.getElementById('by-pair-body');
+  const pairRows = Object.entries(byPair);
+  if (!pairRows.length) {
+    pairBody.innerHTML = '<tr><td colspan="5" class="empty">No closed trades yet.</td></tr>';
+  } else {
+    pairBody.innerHTML = pairRows.map(([pid, v]) => `
+      <tr>
+        <td><a href="detail.html?pair=${encodeURIComponent(pid)}">${v.commodity} → ${v.stock}</a></td>
+        <td class="num">${v.n}</td>
+        <td class="num">${v.wins}</td>
+        <td class="num">${(v.wins / v.n * 100).toFixed(0)}%</td>
+        <td class="num ${Tracker.pnlClass(v.pnl)}">${Tracker.fmtInr(v.pnl)}</td>
+      </tr>`).join('');
+  }
+
+  const allBody = document.getElementById('all-body');
+  if (!data.closed_trades.length) {
+    allBody.innerHTML = '<tr><td colspan="8" class="empty">No closed trades yet.</td></tr>';
+  } else {
+    allBody.innerHTML = data.closed_trades.map(t => `
+      <tr>
+        <td><a href="detail.html?pair=${encodeURIComponent(t.pair_id)}">${t.commodity} → ${t.stock}</a></td>
+        <td><span class="badge ${t.signal === 'BUY' ? 'buy' : 'sell'}">${t.signal}</span></td>
+        <td>${t.entry_date ?? '—'}</td><td class="num">${t.entry_price ?? '—'}</td>
+        <td>${t.exit_date ?? '—'}</td><td class="num">${t.exit_price ?? '—'}</td>
+        <td class="num ${Tracker.pnlClass(t.pnl_pct)}">${Tracker.fmtPct(t.pnl_pct)}</td>
+        <td class="num ${Tracker.pnlClass(t.pnl_inr)}">${Tracker.fmtInr(t.pnl_inr)}</td>
+      </tr>`).join('');
+  }
+
+  document.getElementById('footer').innerHTML = `Last run: ${data.generated_at}`;
+}
+main();
+</script>
+</body>
+</html>

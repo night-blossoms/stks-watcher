@@ -1,0 +1,41 @@
+name: Daily commodity-stock tracker
+
+on:
+  schedule:
+    # 08:45 IST = 03:15 UTC, Mon-Fri. NSE opens 09:15 IST — this runs a bit
+    # before open, using the latest available daily closes (commodity futures
+    # trade almost round-the-clock, so gold/silver/copper's most recent full
+    # session is already in by Indian morning).
+    - cron: "15 3 * * 1-5"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: daily-tracker
+  cancel-in-progress: false
+
+jobs:
+  run-tracker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run tracker
+        run: python tracker.py
+
+      - name: Commit results
+        run: |
+          git config user.name "commodity-tracker-bot"
+          git config user.email "actions@github.com"
+          git add signals_log.csv paper_trades.csv calls/ docs/data.json
+          git diff --cached --quiet || git commit -m "Daily tracker run $(date -u +%F)"
+          git push

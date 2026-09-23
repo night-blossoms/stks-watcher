@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Active Trades — Commodity Signal Tracker</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="wrap">
+    <div id="nav-slot"></div>
+    <h1>Active trades</h1>
+    <p class="subtitle">Currently open dummy positions</p>
+
+    <div class="stat-grid" id="stats"></div>
+
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>Pair</th><th>Signal</th><th>Entry date</th><th class="num">Entry price</th>
+            <th class="num">Qty</th><th class="num">Position ₹</th>
+            <th class="num">Days held</th><th class="num">Hold (d)</th><th>Predicted exit</th>
+          </tr>
+        </thead>
+        <tbody id="body"></tbody>
+      </table>
+    </div>
+
+    <footer id="footer"></footer>
+  </div>
+
+<script src="common.js"></script>
+<script>
+async function main() {
+  document.getElementById('nav-slot').innerHTML = Tracker.renderNav('active.html');
+  let data;
+  try {
+    data = await Tracker.loadData();
+  } catch (e) {
+    document.getElementById('body').innerHTML = '<tr><td class="empty">Could not load data.json yet.</td></tr>';
+    return;
+  }
+
+  const today = new Date(data.run_date);
+  document.getElementById('stats').innerHTML = [
+    ['Open positions', data.summary.open_positions],
+    ['Capital deployed', Tracker.fmtInr(data.summary.capital_deployed_inr)],
+    ['Paper capital', Tracker.fmtInr(data.paper_capital_inr)],
+  ].map(([label, value]) => `
+    <div class="stat-tile"><p class="stat-label">${label}</p><p class="stat-value">${value}</p></div>
+  `).join('');
+
+  const body = document.getElementById('body');
+  if (!data.open_trades.length) {
+    body.innerHTML = '<tr><td colspan="9" class="empty">No open positions right now.</td></tr>';
+  } else {
+    body.innerHTML = data.open_trades.map(t => {
+      const entered = new Date(t.entry_date);
+      const daysHeld = Math.max(0, Math.round((today - entered) / 86400000));
+      const predictedExit = new Date(entered.getTime() + t.hold_days * 86400000).toISOString().slice(0, 10);
+      return `
+        <tr>
+          <td><a href="detail.html?pair=${encodeURIComponent(t.pair_id)}">${t.commodity} → ${t.stock}</a></td>
+          <td><span class="badge ${t.signal === 'BUY' ? 'buy' : 'sell'}">${t.signal}</span></td>
+          <td>${t.entry_date}</td>
+          <td class="num">${t.entry_price}</td>
+          <td class="num">${t.quantity}</td>
+          <td class="num">${Tracker.fmtInr(t.position_value_inr)}</td>
+          <td class="num">${daysHeld}</td>
+          <td class="num">${t.hold_days}</td>
+          <td>${predictedExit}</td>
+        </tr>`;
+    }).join('');
+  }
+
+  document.getElementById('footer').innerHTML = `Last run: ${data.generated_at}`;
+}
+main();
+</script>
+</body>
+</html>

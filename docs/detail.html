@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pair detail — Commodity Signal Tracker</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="wrap">
+    <div id="nav-slot"></div>
+    <a class="back-link" href="index.html">&larr; all tracked pairs</a>
+    <h1 id="title">Loading…</h1>
+    <p class="subtitle" id="subtitle"></p>
+
+    <section>
+      <h2>Rule parameters</h2>
+      <div class="kv-grid" id="params"></div>
+      <div class="note-box" id="note" style="display:none"></div>
+    </section>
+
+    <section>
+      <h2>Today's reading</h2>
+      <div class="kv-grid" id="reading"></div>
+    </section>
+
+    <section id="open-section" style="display:none">
+      <h2>Current open position</h2>
+      <div class="kv-grid" id="open-details"></div>
+    </section>
+
+    <section>
+      <h2>Trade history for this pair</h2>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr><th>Entry date</th><th class="num">Entry</th><th>Exit date</th>
+                <th class="num">Exit</th><th class="num">P&amp;L %</th><th class="num">P&amp;L ₹</th></tr>
+          </thead>
+          <tbody id="history-body"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <footer id="footer"></footer>
+  </div>
+
+<script src="common.js"></script>
+<script>
+async function main() {
+  document.getElementById('nav-slot').innerHTML = Tracker.renderNav('index.html');
+  const pairId = Tracker.qs('pair');
+  let data;
+  try {
+    data = await Tracker.loadData();
+  } catch (e) {
+    document.getElementById('title').textContent = 'Could not load data.json';
+    return;
+  }
+
+  const rule = data.rules_status.find(r => r.pair_id === pairId);
+  if (!rule) {
+    document.getElementById('title').textContent = 'Pair not found';
+    return;
+  }
+
+  document.getElementById('title').textContent = `${rule.commodity} → ${rule.stock}`;
+  document.getElementById('subtitle').innerHTML =
+    `<a class="ext-link" href="${Tracker.stockSearchLink(rule.stock)}" target="_blank" rel="noopener">${rule.stock} price chart ↗</a>` +
+    ` &nbsp;·&nbsp; ` +
+    `<a class="ext-link" href="${Tracker.commoditySearchLink(rule.commodity)}" target="_blank" rel="noopener">${rule.commodity} price today ↗</a>`;
+
+  const kv = (label, value) => `<div><p class="k">${label}</p><p class="v">${value}</p></div>`;
+  document.getElementById('params').innerHTML = [
+    kv('Direction', rule.direction === 'positive' ? 'moves with commodity' : 'moves against commodity'),
+    kv('Threshold', rule.threshold_pct + '%'),
+    kv('Window', rule.window_days + ' day(s)'),
+    kv('Lag', (rule.lag_days ?? '—') + ' day(s)'),
+    kv('Hold duration', rule.hold_days + ' day(s)'),
+    kv('Observed correlation', rule.observed_corr ?? '—'),
+  ].join('');
+
+  if (rule.note) {
+    const box = document.getElementById('note');
+    box.style.display = 'block';
+    box.textContent = 'Calibration note: ' + rule.note;
+  }
+
+  const pct = rule.progress_to_threshold == null ? null : (rule.progress_to_threshold * 100).toFixed(0) + '%';
+  document.getElementById('reading').innerHTML = [
+    kv('Latest move', rule.latest_commodity_pct_change == null ? '—' : Tracker.fmtPct(rule.latest_commodity_pct_change)),
+    kv('% of threshold reached', pct ?? '—'),
+    kv('Triggered today?', rule.triggered_today ? 'yes' : 'no'),
+    kv('As of', rule.latest_run_date ?? '—'),
+  ].join('');
+
+  if (rule.open_trade) {
+    document.getElementById('open-section').style.display = 'block';
+    const t = rule.open_trade;
+    document.getElementById('open-details').innerHTML = [
+      kv('Signal', t.signal),
+      kv('Entry date', t.entry_date),
+      kv('Entry price', t.entry_price),
+      kv('Quantity', t.quantity),
+      kv('Position value', Tracker.fmtInr(t.position_value_inr)),
+      kv('Hold days', t.hold_days),
+    ].join('');
+  }
+
+  const pairTrades = data.closed_trades.filter(t => t.pair_id === pairId);
+  const body = document.getElementById('history-body');
+  if (!pairTrades.length) {
+    body.innerHTML = '<tr><td colspan="6" class="empty">No closed trades yet for this pair.</td></tr>';
+  } else {
+    body.innerHTML = pairTrades.map(t => `
+      <tr>
+        <td>${t.entry_date ?? '—'}</td><td class="num">${t.entry_price ?? '—'}</td>
+        <td>${t.exit_date ?? '—'}</td><td class="num">${t.exit_price ?? '—'}</td>
+        <td class="num ${Tracker.pnlClass(t.pnl_pct)}">${Tracker.fmtPct(t.pnl_pct)}</td>
+        <td class="num ${Tracker.pnlClass(t.pnl_inr)}">${Tracker.fmtInr(t.pnl_inr)}</td>
+      </tr>`).join('');
+  }
+
+  document.getElementById('footer').innerHTML = `Last run: ${data.generated_at}`;
+}
+main();
+</script>
+</body>
+</html>

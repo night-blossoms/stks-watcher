@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Commodity Signal Tracker</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="wrap">
+    <div id="nav-slot"></div>
+    <h1>Tracked pairs</h1>
+    <p class="subtitle">Gold / silver / copper lag-correlation rules — dummy paper trading only</p>
+
+    <div class="disclaimer">
+      <strong>Not financial advice.</strong> Paper trading only, no real money or orders.
+      Each row is one commodity→stock rule; the bar shows how close today's commodity
+      move is to that rule's trigger threshold.
+    </div>
+
+    <div class="card-list" id="pairs"></div>
+
+    <footer id="footer"></footer>
+  </div>
+
+<script src="common.js"></script>
+<script>
+async function main() {
+  document.getElementById('nav-slot').innerHTML = Tracker.renderNav('index.html');
+  let data;
+  try {
+    data = await Tracker.loadData();
+  } catch (e) {
+    document.getElementById('pairs').innerHTML = '<div class="empty">Could not load data.json yet — the daily job hasn\'t run.</div>';
+    return;
+  }
+
+  const container = document.getElementById('pairs');
+  container.innerHTML = data.rules_status.map(r => {
+    const pct = r.progress_to_threshold == null ? 0 : Math.min(r.progress_to_threshold, 1) * 100;
+    const hot = r.triggered_today || (r.progress_to_threshold != null && r.progress_to_threshold >= 0.8);
+    const moveLabel = r.latest_commodity_pct_change == null ? 'no data yet' :
+      `${r.commodity} moved ${Tracker.fmtPct(r.latest_commodity_pct_change)} (threshold ${r.threshold_pct}%)`;
+    let stageBadge = '<span class="badge status-open">watching</span>';
+    if (r.open_trade) stageBadge = '<span class="badge status-open">position open</span>';
+    else if (r.triggered_today) stageBadge = '<span class="badge buy">triggered today</span>';
+
+    return `
+      <a class="card" href="detail.html?pair=${encodeURIComponent(r.pair_id)}">
+        <div class="card-top">
+          <span class="card-title">${r.commodity} → ${r.stock}</span>
+          ${stageBadge}
+        </div>
+        <div class="progress-track"><div class="progress-fill ${hot ? 'hot' : ''}" style="width:${pct.toFixed(0)}%"></div></div>
+        <div class="progress-label">${moveLabel} · as of ${r.latest_run_date ?? '—'}</div>
+      </a>`;
+  }).join('');
+
+  document.getElementById('footer').innerHTML = `Last run: ${data.generated_at}`;
+}
+main();
+</script>
+</body>
+</html>
