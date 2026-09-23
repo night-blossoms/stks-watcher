@@ -37,7 +37,7 @@ SIGNAL_COLUMNS = ["run_date", "commodity", "commodity_pct_change", "window_days"
                    "stock", "direction_rule", "threshold_pct", "triggered", "signal"]
 TRADE_COLUMNS = ["id", "commodity", "stock", "signal", "entry_date", "entry_price",
                   "quantity", "position_value_inr", "hold_days", "exit_date", "exit_price",
-                  "status", "pnl_pct", "pnl_inr"]
+                  "status", "pnl_pct", "pnl_inr", "horizon_tag", "signal_source"]
 
 DEFAULT_POSITION_SIZING = {
     "paper_capital_inr": 100000, "max_concurrent_positions": 6,
@@ -86,6 +86,8 @@ def build_call_dict(row, rule_cfg):
         "exit_price": (float(row["exit_price"]) if _none_if_blank(row["exit_price"]) is not None else None),
         "pnl_pct": (float(row["pnl_pct"]) if _none_if_blank(row["pnl_pct"]) is not None else None),
         "pnl_inr": (float(row["pnl_inr"]) if _none_if_blank(row["pnl_inr"]) is not None else None),
+        "horizon_tag": rule_cfg.get("horizon_tag", ""),
+        "signal_source": rule_cfg.get("signal_source", ""),
         "rule": {
             "threshold_pct": rule_cfg.get("threshold_pct"),
             "window_days": rule_cfg.get("window_days"),
@@ -207,15 +209,17 @@ def update_paper_trades(trades_df, triggers, run_date, sizing, rules):
         size_multiplier = min(move_strength, sizing["max_size_multiplier"])
         position_value = base_bet * size_multiplier
         quantity = position_value / float(entry_price)
+        rule_cfg = rules.get(commodity, {}).get(stock, {})
         new_row = {
             "id": next_id, "commodity": commodity, "stock": stock, "signal": signal,
             "entry_date": run_date, "entry_price": round(float(entry_price), 2),
             "quantity": round(quantity, 4), "position_value_inr": round(position_value, 2),
             "hold_days": hold_days, "exit_date": "", "exit_price": "",
             "status": "OPEN", "pnl_pct": "", "pnl_inr": "",
+            "horizon_tag": rule_cfg.get("horizon_tag", ""),
+            "signal_source": rule_cfg.get("signal_source", ""),
         }
         new_rows.append(new_row)
-        rule_cfg = rules.get(commodity, {}).get(stock, {})
         write_call_file(pd.Series(new_row), rule_cfg)
         open_pairs.add((commodity, stock))
         open_count += 1
@@ -278,6 +282,8 @@ def write_docs_data(trades_df, sizing, run_date, rules, signal_rows):
                 "window_days": cfg["window_days"], "lag_days": cfg.get("lag_days"),
                 "hold_days": cfg["hold_days"], "observed_corr": cfg.get("observed_corr"),
                 "note": cfg.get("note", ""),
+                "horizon_tag": cfg.get("horizon_tag", ""),
+                "signal_source": cfg.get("signal_source", ""),
                 "latest_run_date": str(ev["run_date"]) if ev else None,
                 "latest_commodity_pct_change": move,
                 "progress_to_threshold": progress,

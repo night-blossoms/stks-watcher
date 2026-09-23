@@ -1,1 +1,1 @@
-id,commodity,stock,signal,entry_date,entry_price,quantity,position_value_inr,hold_days,exit_date,exit_price,status,pnl_pct,pnl_inr
+id,commodity,stock,signal,entry_date,entry_price,quantity,position_value_inr,hold_days,exit_date,exit_price,status,pnl_pct,pnl_inr,horizon_tag,signal_source

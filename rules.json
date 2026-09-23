@@ -1,5 +1,5 @@
 {
-  "_comment": "Calibrated 2026-09-24. Lags/thresholds from analyze_correlation.py; hold_days from event_study.py's day-by-day decay curves (see lag_correlation_results.csv and the event_study.py printout). gold->TITAN.NS and gold->MANAPPURAM.NS were tested and dropped: no lagged edge. NOTE: gold->MUTHOOTFIN.NS and copper->HINDCOPPER.NS decay/reverse in the second (more recent) half of history — hold_days set conservatively short for those, before the reversal starts. silver->VEDL.NS is the most durable signal found: it keeps growing through day 7 in both halves.",
+  "_comment": "Calibrated 2026-09-24. Lags/thresholds from analyze_correlation.py; hold_days from event_study.py's day-by-day decay curves (see lag_correlation_results.csv and the event_study.py printout). gold->TITAN.NS and gold->MANAPPURAM.NS were tested and dropped: no lagged edge. NOTE: gold->MUTHOOTFIN.NS and copper->HINDCOPPER.NS decay/reverse in the second (more recent) half of history — hold_days set conservatively short for those, before the reversal starts. silver->VEDL.NS is the most durable signal found: it keeps growing through day 7 in both halves. horizon_tag: short_horizon = hold_days<=2, long_horizon = hold_days>=3. signal_source identifies which analysis produced the rule, for comparing methodologies once experiments.py's alternative metrics (market-neutral, volume-gated, etc.) get promoted to live rules - see REFERENCES.md and experiments.py.",
 
   "_position_sizing": {
     "paper_capital_inr": 100000,
@@ -10,15 +10,15 @@
   },
 
   "gold": {
-    "MUTHOOTFIN.NS": {"direction": "positive", "threshold_pct": 1.5, "window_days": 1, "lag_days": 1, "hold_days": 3, "observed_corr": 0.254, "note": "peak at h5 but half2 turns negative by h6 - exit early"}
+    "MUTHOOTFIN.NS": {"direction": "positive", "threshold_pct": 1.5, "window_days": 1, "lag_days": 1, "hold_days": 3, "observed_corr": 0.254, "note": "peak at h5 but half2 turns negative by h6 - exit early", "horizon_tag": "long_horizon", "signal_source": "baseline_pearson"}
   },
   "silver": {
-    "HINDZINC.NS": {"direction": "positive", "threshold_pct": 3.0, "window_days": 1, "lag_days": 1, "hold_days": 3, "observed_corr": 0.266, "note": "peak at h3, half2 decays after h6"},
-    "VEDL.NS": {"direction": "positive", "threshold_pct": 3.0, "window_days": 1, "lag_days": 1, "hold_days": 7, "observed_corr": 0.153, "note": "most durable pair found - keeps growing to h7+ in both halves"}
+    "HINDZINC.NS": {"direction": "positive", "threshold_pct": 3.0, "window_days": 1, "lag_days": 1, "hold_days": 3, "observed_corr": 0.266, "note": "peak at h3, half2 decays after h6", "horizon_tag": "long_horizon", "signal_source": "baseline_pearson"},
+    "VEDL.NS": {"direction": "positive", "threshold_pct": 3.0, "window_days": 1, "lag_days": 1, "hold_days": 7, "observed_corr": 0.153, "note": "most durable pair found - keeps growing to h7+ in both halves", "horizon_tag": "long_horizon", "signal_source": "baseline_pearson"}
   },
   "copper": {
-    "HINDALCO.NS": {"direction": "positive", "threshold_pct": 2.0, "window_days": 1, "lag_days": 1, "hold_days": 2, "observed_corr": 0.262, "note": "fast peak at h2, stable both halves, mild erosion after h7"},
-    "HINDCOPPER.NS": {"direction": "positive", "threshold_pct": 2.0, "window_days": 1, "lag_days": 1, "hold_days": 3, "observed_corr": 0.182, "note": "reverses hard after h7 in both halves - exit early"},
-    "VEDL.NS": {"direction": "positive", "threshold_pct": 2.0, "window_days": 1, "lag_days": 1, "hold_days": 3, "observed_corr": 0.108, "note": "weakest of the six, decays after h7"}
+    "HINDALCO.NS": {"direction": "positive", "threshold_pct": 2.0, "window_days": 1, "lag_days": 1, "hold_days": 2, "observed_corr": 0.262, "note": "fast peak at h2, stable both halves, mild erosion after h7", "horizon_tag": "short_horizon", "signal_source": "baseline_pearson"},
+    "HINDCOPPER.NS": {"direction": "positive", "threshold_pct": 2.0, "window_days": 1, "lag_days": 1, "hold_days": 3, "observed_corr": 0.182, "note": "reverses hard after h7 in both halves - exit early", "horizon_tag": "long_horizon", "signal_source": "baseline_pearson"},
+    "VEDL.NS": {"direction": "positive", "threshold_pct": 2.0, "window_days": 1, "lag_days": 1, "hold_days": 3, "observed_corr": 0.108, "note": "weakest of the six, decays after h7", "horizon_tag": "long_horizon", "signal_source": "baseline_pearson"}
   }
 }

@@ -1,0 +1,7 @@
+commodity,stock,pvalue_lag1,pvalue_lag2,pvalue_lag3,pvalue_lag4,pvalue_lag5,pvalue_lag6,pvalue_lag7
+gold,MUTHOOTFIN.NS,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+silver,HINDZINC.NS,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+silver,VEDL.NS,0.0014,0.0014,0.0003,0.0006,0.0011,0.002,0.0036
+copper,HINDALCO.NS,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+copper,HINDCOPPER.NS,0.0,0.0001,0.0005,0.0012,0.003,0.0051,0.0035
+copper,VEDL.NS,0.0166,0.0235,0.0295,0.0528,0.0988,0.116,0.1531
