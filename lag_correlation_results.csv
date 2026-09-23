@@ -71,7 +71,7 @@ gold,silver,4,0.03,499,-0.067,0.057,False,n/a
 gold,silver,5,-0.048,498,-0.044,-0.05,False,n/a
 gold,silver,6,-0.062,497,-0.035,-0.07,False,n/a
 gold,silver,7,-0.079,496,0.017,-0.107,False,n/a
-gold,copper,0,0.41,503,0.316,0.534,True,n/a
+gold,copper,0,0.41,503,0.316,0.533,True,n/a
 gold,copper,1,-0.017,502,0.094,-0.109,False,n/a
 gold,copper,2,0.012,501,0.027,0.002,False,n/a
 gold,copper,3,0.033,500,0.007,0.058,False,n/a
@@ -95,14 +95,14 @@ silver,copper,4,0.004,499,0.031,-0.011,False,n/a
 silver,copper,5,-0.068,498,0.007,-0.126,False,n/a
 silver,copper,6,0.011,497,-0.041,0.04,False,n/a
 silver,copper,7,-0.028,496,-0.045,-0.025,False,n/a
-copper,gold,0,0.41,503,0.316,0.534,True,n/a
-copper,gold,1,-0.068,502,-0.078,-0.064,True,n/a
+copper,gold,0,0.41,503,0.316,0.533,True,n/a
+copper,gold,1,-0.068,502,-0.078,-0.065,True,n/a
 copper,gold,2,-0.057,501,-0.023,-0.09,False,n/a
 copper,gold,3,0.031,500,-0.063,0.113,False,n/a
 copper,gold,4,-0.061,499,-0.097,-0.037,False,n/a
 copper,gold,5,-0.067,498,-0.043,-0.093,False,n/a
 copper,gold,6,-0.03,497,-0.019,-0.042,False,n/a
-copper,gold,7,0.017,496,0.023,0.014,False,n/a
+copper,gold,7,0.017,496,0.023,0.015,False,n/a
 copper,silver,0,0.505,503,0.448,0.647,True,n/a
 copper,silver,1,-0.06,502,0.011,-0.113,False,n/a
 copper,silver,2,-0.013,501,-0.04,-0.002,False,n/a

@@ -32,6 +32,11 @@ STOCK_MAP = {
         "HINDALCO.NS": "positive",
         "VEDL.NS": "positive",
     },
+    # Tested and rejected: SBIN.NS, HDFCBANK.NS, ICICIBANK.NS vs gold/silver.
+    # Banks have no direct commodity exposure — any link would have to run
+    # through the slower macro chain (inflation -> RBI policy -> bond yields
+    # -> bank margins). No lag-1 correlation exceeded 0.10 for any bank; see
+    # REFERENCES.md for the full numbers.
 }
 
 
