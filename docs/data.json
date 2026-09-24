@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-24T05:32:26",
+  "generated_at": "2026-09-24T18:57:40",
   "run_date": "2026-09-24",
   "paper_capital_inr": 100000,
   "summary": {
@@ -26,10 +26,19 @@
       "horizon_tag": "long_horizon",
       "signal_source": "baseline_pearson",
       "latest_run_date": "2026-09-24",
-      "latest_commodity_pct_change": 0.118,
-      "progress_to_threshold": 0.079,
+      "latest_commodity_pct_change": -1.227,
+      "progress_to_threshold": 0.818,
       "triggered_today": false,
-      "open_trade": null
+      "open_trade": null,
+      "signal_history": [
+        {
+          "run_date": "2026-09-24",
+          "commodity_pct_change": -1.227,
+          "threshold_pct": 1.5,
+          "progress_to_threshold": 0.818,
+          "triggered": false
+        }
+      ]
     },
     {
       "pair_id": "silver__HINDZINC.NS",
@@ -45,10 +54,19 @@
       "horizon_tag": "long_horizon",
       "signal_source": "baseline_pearson",
       "latest_run_date": "2026-09-24",
-      "latest_commodity_pct_change": 0.292,
-      "progress_to_threshold": 0.097,
+      "latest_commodity_pct_change": -1.52,
+      "progress_to_threshold": 0.507,
       "triggered_today": false,
-      "open_trade": null
+      "open_trade": null,
+      "signal_history": [
+        {
+          "run_date": "2026-09-24",
+          "commodity_pct_change": -1.52,
+          "threshold_pct": 3.0,
+          "progress_to_threshold": 0.507,
+          "triggered": false
+        }
+      ]
     },
     {
       "pair_id": "silver__VEDL.NS",
@@ -64,10 +82,19 @@
       "horizon_tag": "long_horizon",
       "signal_source": "baseline_pearson",
       "latest_run_date": "2026-09-24",
-      "latest_commodity_pct_change": 0.292,
-      "progress_to_threshold": 0.097,
+      "latest_commodity_pct_change": -1.52,
+      "progress_to_threshold": 0.507,
       "triggered_today": false,
-      "open_trade": null
+      "open_trade": null,
+      "signal_history": [
+        {
+          "run_date": "2026-09-24",
+          "commodity_pct_change": -1.52,
+          "threshold_pct": 3.0,
+          "progress_to_threshold": 0.507,
+          "triggered": false
+        }
+      ]
     },
     {
       "pair_id": "copper__HINDALCO.NS",
@@ -83,10 +110,19 @@
       "horizon_tag": "short_horizon",
       "signal_source": "baseline_pearson",
       "latest_run_date": "2026-09-24",
-      "latest_commodity_pct_change": 1.288,
-      "progress_to_threshold": 0.644,
+      "latest_commodity_pct_change": 0.473,
+      "progress_to_threshold": 0.236,
       "triggered_today": false,
-      "open_trade": null
+      "open_trade": null,
+      "signal_history": [
+        {
+          "run_date": "2026-09-24",
+          "commodity_pct_change": 0.473,
+          "threshold_pct": 2.0,
+          "progress_to_threshold": 0.236,
+          "triggered": false
+        }
+      ]
     },
     {
       "pair_id": "copper__HINDCOPPER.NS",
@@ -102,10 +138,19 @@
       "horizon_tag": "long_horizon",
       "signal_source": "baseline_pearson",
       "latest_run_date": "2026-09-24",
-      "latest_commodity_pct_change": 1.288,
-      "progress_to_threshold": 0.644,
+      "latest_commodity_pct_change": 0.473,
+      "progress_to_threshold": 0.236,
       "triggered_today": false,
-      "open_trade": null
+      "open_trade": null,
+      "signal_history": [
+        {
+          "run_date": "2026-09-24",
+          "commodity_pct_change": 0.473,
+          "threshold_pct": 2.0,
+          "progress_to_threshold": 0.236,
+          "triggered": false
+        }
+      ]
     },
     {
       "pair_id": "copper__VEDL.NS",
@@ -121,10 +166,19 @@
       "horizon_tag": "long_horizon",
       "signal_source": "baseline_pearson",
       "latest_run_date": "2026-09-24",
-      "latest_commodity_pct_change": 1.288,
-      "progress_to_threshold": 0.644,
+      "latest_commodity_pct_change": 0.473,
+      "progress_to_threshold": 0.236,
       "triggered_today": false,
-      "open_trade": null
+      "open_trade": null,
+      "signal_history": [
+        {
+          "run_date": "2026-09-24",
+          "commodity_pct_change": 0.473,
+          "threshold_pct": 2.0,
+          "progress_to_threshold": 0.236,
+          "triggered": false
+        }
+      ]
     }
   ],
   "open_trades": [],

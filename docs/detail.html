@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Pair detail — Commodity Signal Tracker</title>
-<link rel="stylesheet" href="style.css?v=2">
+<link rel="stylesheet" href="style.css?v=3">
 </head>
 <body>
   <div class="wrap">
@@ -30,6 +30,20 @@
     </section>
 
     <section>
+      <h2>Recent readings</h2>
+      <p class="subtitle">Every daily check, not just today — shows exactly when a move approached or crossed the threshold.</p>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr><th>Date</th><th class="num">Commodity move</th>
+                <th class="num">% of threshold</th><th>Triggered?</th></tr>
+          </thead>
+          <tbody id="signal-history-body"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
       <h2>Trade history for this pair</h2>
       <div class="table-scroll">
         <table>
@@ -45,7 +59,7 @@
     <footer id="footer"></footer>
   </div>
 
-<script src="common.js?v=2"></script>
+<script src="common.js?v=3"></script>
 <script>
 async function main() {
   document.getElementById('nav-slot').innerHTML = Tracker.renderNav('index.html');
@@ -105,6 +119,23 @@ async function main() {
       kv('Position value', Tracker.fmtInr(t.position_value_inr)),
       kv('Hold days', t.hold_days),
     ].join('');
+  }
+
+  const histBody = document.getElementById('signal-history-body');
+  const history = rule.signal_history || [];
+  if (!history.length) {
+    histBody.innerHTML = '<tr><td colspan="4" class="empty">No readings logged yet.</td></tr>';
+  } else {
+    histBody.innerHTML = history.slice().reverse().map(h => {
+      const pct = h.progress_to_threshold == null ? '—' : (h.progress_to_threshold * 100).toFixed(0) + '%';
+      return `
+      <tr class="${h.triggered ? 'hot-row' : ''}">
+        <td>${h.run_date}</td>
+        <td class="num">${Tracker.fmtPct(h.commodity_pct_change)} (thr ${h.threshold_pct}%)</td>
+        <td class="num">${pct}</td>
+        <td>${h.triggered ? '<span class="badge buy">yes</span>' : 'no'}</td>
+      </tr>`;
+    }).join('');
   }
 
   const pairTrades = data.closed_trades.filter(t => t.pair_id === pairId);

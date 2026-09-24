@@ -166,6 +166,7 @@ tr:last-child td { border-bottom: none; }
 td.num { font-variant-numeric: tabular-nums; text-align: right; }
 .pos { color: var(--good); }
 .neg { color: var(--critical); }
+tr.hot-row { background: color-mix(in srgb, var(--good) 12%, transparent); }
 
 .badge {
   display: inline-block;

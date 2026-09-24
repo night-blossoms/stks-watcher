@@ -234,7 +234,7 @@ def pair_id(commodity, stock):
     return f"{commodity}__{stock}"
 
 
-def write_docs_data(trades_df, sizing, run_date, rules, signal_rows):
+def write_docs_data(trades_df, sizing, run_date, rules, signal_rows, signals_df):
     """Aggregate rules.json + today's evaluations + paper_trades.csv into
     docs/data.json for the GitHub Pages site."""
     os.makedirs(os.path.dirname(DOCS_DATA_PATH), exist_ok=True)
@@ -269,6 +269,34 @@ def write_docs_data(trades_df, sizing, run_date, rules, signal_rows):
     # today's evaluation per pair, keyed for the tracking-stage page
     latest_eval = {(r["commodity"], r["stock"]): r for r in signal_rows}
 
+    # Full day-by-day reading history per pair, so the site can show *when*
+    # a move approached/crossed the threshold, not just today's snapshot.
+    # signals_log.csv has logged every evaluation, every day, since day one
+    # (nothing throttled) - this was always there, just never surfaced.
+    HISTORY_LIMIT = 30
+    history_by_pair = {}
+    if not signals_df.empty:
+        sdf = signals_df.copy()
+        sdf["run_date"] = sdf["run_date"].astype(str)
+        for (commodity, stock), grp in sdf.groupby(["commodity", "stock"]):
+            # collapse multiple same-day runs (manual reruns, testing) down to
+            # that day's last reading, so history shows one point per day
+            grp = grp.sort_values("run_date").drop_duplicates("run_date", keep="last")
+            grp = grp.tail(HISTORY_LIMIT)
+            rows = []
+            for _, r in grp.iterrows():
+                move = r["commodity_pct_change"]
+                threshold = r["threshold_pct"]
+                progress = round(abs(move) / threshold, 3) if threshold else None
+                rows.append({
+                    "run_date": r["run_date"],
+                    "commodity_pct_change": round(float(move), 3),
+                    "threshold_pct": float(threshold),
+                    "progress_to_threshold": progress,
+                    "triggered": bool(r["triggered"]),
+                })
+            history_by_pair[pair_id(commodity, stock)] = rows
+
     rules_status = []
     for commodity, stock_cfgs in rules.items():
         for stock, cfg in stock_cfgs.items():
@@ -289,6 +317,7 @@ def write_docs_data(trades_df, sizing, run_date, rules, signal_rows):
                 "progress_to_threshold": progress,
                 "triggered_today": bool(ev["triggered"]) if ev else False,
                 "open_trade": open_by_pair.get(pid),
+                "signal_history": history_by_pair.get(pid, []),
             })
 
     closed = trades_df[trades_df["status"] == "CLOSED"] if not trades_df.empty else pd.DataFrame()
@@ -354,7 +383,7 @@ def main():
             print(f"  {commodity} -> {stock}: {signal} @ {entry_price:.2f} "
                   f"(hold {hold_days}d, move_strength {move_strength:.2f}x threshold)")
 
-    write_docs_data(trades_df, sizing, run_date, rules, signal_rows)
+    write_docs_data(trades_df, sizing, run_date, rules, signal_rows, signals_df)
     print(f"wrote {DOCS_DATA_PATH}")
 
 
