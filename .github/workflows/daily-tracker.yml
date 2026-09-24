@@ -2,11 +2,12 @@ name: Daily commodity-stock tracker
 
 on:
   schedule:
-    # 08:45 IST = 03:15 UTC, Mon-Fri. NSE opens 09:15 IST — this runs a bit
-    # before open, using the latest available daily closes (commodity futures
-    # trade almost round-the-clock, so gold/silver/copper's most recent full
-    # session is already in by Indian morning).
-    - cron: "15 3 * * 1-5"
+    # 10:20 IST = 04:50 UTC, Mon-Fri. NSE opens 09:15 IST — this runs after
+    # open, but it doesn't matter for data freshness either way: yfinance's
+    # daily close for a ticker isn't available until that day's session
+    # ends (~15:30 IST), so this is still reacting to the PREVIOUS day's
+    # close regardless of whether it runs at 08:45 or 10:20.
+    - cron: "50 4 * * 1-5"
   workflow_dispatch: {}
 
 permissions:
