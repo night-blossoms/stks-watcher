@@ -2,11 +2,12 @@ name: Daily commodity-stock tracker
 
 on:
   schedule:
-    # TEMPORARY one-off: 10:55 IST = 05:25 UTC today, to verify the cache-
-    # busting/footer fix on a real scheduled run rather than a manual
-    # workflow_dispatch. Revert to 10:20 IST (cron "50 4 * * 1-5") once
-    # confirmed.
-    - cron: "25 5 * * 1-5"
+    # 10:20 IST = 04:50 UTC, Mon-Fri. NSE opens 09:15 IST — this runs after
+    # open, but it doesn't matter for data freshness either way: yfinance's
+    # daily close for a ticker isn't available until that day's session
+    # ends (~15:30 IST), so this is still reacting to the PREVIOUS day's
+    # close regardless of whether it runs at 08:45 or 10:20.
+    - cron: "50 4 * * 1-5"
   workflow_dispatch: {}
 
 permissions:
