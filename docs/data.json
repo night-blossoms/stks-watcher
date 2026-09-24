@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-24T05:00:04",
+  "generated_at": "2026-09-24T04:40:41",
   "run_date": "2026-09-24",
   "paper_capital_inr": 100000,
   "summary": {
@@ -26,8 +26,8 @@
       "horizon_tag": "long_horizon",
       "signal_source": "baseline_pearson",
       "latest_run_date": "2026-09-24",
-      "latest_commodity_pct_change": -1.227,
-      "progress_to_threshold": 0.818,
+      "latest_commodity_pct_change": 0.058,
+      "progress_to_threshold": 0.039,
       "triggered_today": false,
       "open_trade": null
     },
@@ -45,8 +45,8 @@
       "horizon_tag": "long_horizon",
       "signal_source": "baseline_pearson",
       "latest_run_date": "2026-09-24",
-      "latest_commodity_pct_change": -1.52,
-      "progress_to_threshold": 0.507,
+      "latest_commodity_pct_change": 0.315,
+      "progress_to_threshold": 0.105,
       "triggered_today": false,
       "open_trade": null
     },
@@ -64,8 +64,8 @@
       "horizon_tag": "long_horizon",
       "signal_source": "baseline_pearson",
       "latest_run_date": "2026-09-24",
-      "latest_commodity_pct_change": -1.52,
-      "progress_to_threshold": 0.507,
+      "latest_commodity_pct_change": 0.315,
+      "progress_to_threshold": 0.105,
       "triggered_today": false,
       "open_trade": null
     },
@@ -83,8 +83,8 @@
       "horizon_tag": "short_horizon",
       "signal_source": "baseline_pearson",
       "latest_run_date": "2026-09-24",
-      "latest_commodity_pct_change": 0.473,
-      "progress_to_threshold": 0.236,
+      "latest_commodity_pct_change": 1.228,
+      "progress_to_threshold": 0.614,
       "triggered_today": false,
       "open_trade": null
     },
@@ -102,8 +102,8 @@
       "horizon_tag": "long_horizon",
       "signal_source": "baseline_pearson",
       "latest_run_date": "2026-09-24",
-      "latest_commodity_pct_change": 0.473,
-      "progress_to_threshold": 0.236,
+      "latest_commodity_pct_change": 1.228,
+      "progress_to_threshold": 0.614,
       "triggered_today": false,
       "open_trade": null
     },
@@ -121,8 +121,8 @@
       "horizon_tag": "long_horizon",
       "signal_source": "baseline_pearson",
       "latest_run_date": "2026-09-24",
-      "latest_commodity_pct_change": 0.473,
-      "progress_to_threshold": 0.236,
+      "latest_commodity_pct_change": 1.228,
+      "progress_to_threshold": 0.614,
       "triggered_today": false,
       "open_trade": null
     }
