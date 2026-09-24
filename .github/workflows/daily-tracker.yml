@@ -36,6 +36,7 @@ jobs:
         run: |
           git config user.name "commodity-tracker-bot"
           git config user.email "actions@github.com"
-          git add signals_log.csv paper_trades.csv calls/ docs/data.json
+          git add signals_log.csv paper_trades.csv docs/data.json
+          [ -d calls ] && git add calls/
           git diff --cached --quiet || git commit -m "Daily tracker run $(date -u +%F)"
           git push
