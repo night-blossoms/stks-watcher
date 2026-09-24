@@ -17,12 +17,16 @@ const Tracker = (() => {
   // local/IST time as-is.
   function fmtIST(isoNaiveUtc) {
     if (!isoNaiveUtc) return '—';
-    const d = new Date(isoNaiveUtc.endsWith('Z') ? isoNaiveUtc : isoNaiveUtc + 'Z');
-    if (isNaN(d)) return isoNaiveUtc;
-    return d.toLocaleString('en-IN', {
-      timeZone: 'Asia/Kolkata', day: 'numeric', month: 'short', year: 'numeric',
-      hour: 'numeric', minute: '2-digit', hour12: true,
-    }) + ' IST';
+    try {
+      const d = new Date(isoNaiveUtc.endsWith('Z') ? isoNaiveUtc : isoNaiveUtc + 'Z');
+      if (isNaN(d)) return isoNaiveUtc;
+      return d.toLocaleString('en-IN', {
+        timeZone: 'Asia/Kolkata', day: 'numeric', month: 'short', year: 'numeric',
+        hour: 'numeric', minute: '2-digit', hour12: true,
+      }) + ' IST';
+    } catch (e) {
+      return isoNaiveUtc; // never let a formatting hiccup blank the whole footer
+    }
   }
 
   // Google search link so the price/chart page for a stock is one click away.
