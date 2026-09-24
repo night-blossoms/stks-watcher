@@ -11,6 +11,20 @@ const Tracker = (() => {
   const pnlClass = n => n == null ? '' : (n >= 0 ? 'pos' : 'neg');
   const pairId = (commodity, stock) => `${commodity}__${stock}`;
 
+  // generated_at is written by Python's datetime.now() on the GitHub
+  // Actions runner, which runs in UTC, as a naive (no offset) ISO string.
+  // Display it in IST with an explicit label so it's not mistaken for
+  // local/IST time as-is.
+  function fmtIST(isoNaiveUtc) {
+    if (!isoNaiveUtc) return '—';
+    const d = new Date(isoNaiveUtc.endsWith('Z') ? isoNaiveUtc : isoNaiveUtc + 'Z');
+    if (isNaN(d)) return isoNaiveUtc;
+    return d.toLocaleString('en-IN', {
+      timeZone: 'Asia/Kolkata', day: 'numeric', month: 'short', year: 'numeric',
+      hour: 'numeric', minute: '2-digit', hour12: true,
+    }) + ' IST';
+  }
+
   // Google search link so the price/chart page for a stock is one click away.
   // "<TICKER> stock price" reliably surfaces Google's own price/chart card.
   function googleSearchLink(query) {
@@ -39,5 +53,5 @@ const Tracker = (() => {
     return new URLSearchParams(window.location.search).get(name);
   }
 
-  return { loadData, fmtInr, fmtPct, pnlClass, pairId, stockSearchLink, commoditySearchLink, renderNav, qs };
+  return { loadData, fmtInr, fmtPct, pnlClass, pairId, fmtIST, stockSearchLink, commoditySearchLink, renderNav, qs };
 })();

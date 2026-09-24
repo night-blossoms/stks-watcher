@@ -74,7 +74,7 @@ async function main() {
     }).join('');
   }
 
-  document.getElementById('footer').innerHTML = `Last run: ${data.generated_at}`;
+  document.getElementById('footer').innerHTML = `Last run: ${Tracker.fmtIST(data.generated_at)}`;
 }
 main();
 </script>
