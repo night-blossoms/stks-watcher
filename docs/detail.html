@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Pair detail — Commodity Signal Tracker</title>
-<link rel="stylesheet" href="style.css?v=3">
+<link rel="stylesheet" href="style.css?v=4">
 </head>
 <body>
   <div class="wrap">
@@ -35,8 +35,9 @@
       <div class="table-scroll">
         <table>
           <thead>
-            <tr><th>Date</th><th class="num">Commodity move</th>
-                <th class="num">% of threshold</th><th>Triggered?</th></tr>
+            <tr><th>Date/time</th><th class="num">1-day move</th>
+                <th class="num">% of threshold</th><th class="num">Cumulative move</th>
+                <th>Triggered?</th></tr>
           </thead>
           <tbody id="signal-history-body"></tbody>
         </table>
@@ -92,6 +93,8 @@ async function main() {
     kv('Lag', (rule.lag_days ?? '—') + ' day(s)'),
     kv('Hold duration', rule.hold_days + ' day(s)'),
     kv('Observed correlation', rule.observed_corr ?? '—'),
+    kv('Horizon tag', rule.horizon_tag || '—'),
+    kv('Signal source', rule.signal_source || '—'),
   ].join('');
 
   if (rule.note) {
@@ -101,11 +104,15 @@ async function main() {
   }
 
   const pct = rule.progress_to_threshold == null ? null : (rule.progress_to_threshold * 100).toFixed(0) + '%';
+  const cumPct = rule.cumulative_progress == null ? null : (rule.cumulative_progress * 100).toFixed(0) + '%';
+  const asOf = rule.latest_run_timestamp ? Tracker.fmtIST(rule.latest_run_timestamp) : (rule.latest_run_date ?? '—');
   document.getElementById('reading').innerHTML = [
-    kv('Latest move', rule.latest_commodity_pct_change == null ? '—' : Tracker.fmtPct(rule.latest_commodity_pct_change)),
+    kv('Latest move (1-day)', rule.latest_commodity_pct_change == null ? '—' : Tracker.fmtPct(rule.latest_commodity_pct_change)),
     kv('% of threshold reached', pct ?? '—'),
+    kv(`Cumulative move (${rule.cumulative_window_days}-day)`, rule.latest_cumulative_pct_change == null ? '—' : Tracker.fmtPct(rule.latest_cumulative_pct_change)),
+    kv('% of cumulative threshold', cumPct ?? '—'),
     kv('Triggered today?', rule.triggered_today ? 'yes' : 'no'),
-    kv('As of', rule.latest_run_date ?? '—'),
+    kv('As of', asOf + (rule.latest_is_intraday ? ' (live intraday)' : ' (official close)')),
   ].join('');
 
   if (rule.open_trade) {
@@ -124,15 +131,20 @@ async function main() {
   const histBody = document.getElementById('signal-history-body');
   const history = rule.signal_history || [];
   if (!history.length) {
-    histBody.innerHTML = '<tr><td colspan="4" class="empty">No readings logged yet.</td></tr>';
+    histBody.innerHTML = '<tr><td colspan="5" class="empty">No readings logged yet.</td></tr>';
   } else {
     histBody.innerHTML = history.slice().reverse().map(h => {
       const pct = h.progress_to_threshold == null ? '—' : (h.progress_to_threshold * 100).toFixed(0) + '%';
+      const when = h.run_timestamp ? Tracker.fmtIST(h.run_timestamp) : h.run_date;
+      const liveTag = h.is_intraday ? ' <span class="badge status-open">live</span>' : '';
+      const cum = h.cumulative_pct_change == null ? '—' :
+        `${Tracker.fmtPct(h.cumulative_pct_change)}${h.cumulative_progress != null ? ' (' + (h.cumulative_progress * 100).toFixed(0) + '%)' : ''}`;
       return `
       <tr class="${h.triggered ? 'hot-row' : ''}">
-        <td>${h.run_date}</td>
+        <td>${when}${liveTag}</td>
         <td class="num">${Tracker.fmtPct(h.commodity_pct_change)} (thr ${h.threshold_pct}%)</td>
         <td class="num">${pct}</td>
+        <td class="num">${cum}</td>
         <td>${h.triggered ? '<span class="badge buy">yes</span>' : 'no'}</td>
       </tr>`;
     }).join('');

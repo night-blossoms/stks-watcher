@@ -2,13 +2,28 @@ name: Daily commodity-stock tracker
 
 on:
   schedule:
-    # 10:20 IST = 04:50 UTC, Mon-Fri. NSE opens 09:15 IST — this runs after
-    # open, but it doesn't matter for data freshness either way: yfinance's
-    # daily close for a ticker isn't available until that day's session
-    # ends (~15:30 IST), so this is still reacting to the PREVIOUS day's
-    # close regardless of whether it runs at 08:45 or 10:20.
+    # OFFICIAL run: 10:20 IST = 04:50 UTC, Mon-Fri. This is the only run that
+    # opens/closes paper trades - it reacts to the most recently completed
+    # daily close (yesterday's, since today's session isn't done yet at this
+    # hour), matching how every rule was calibrated (1-day close-to-close).
     - cron: "50 4 * * 1-5"
-  workflow_dispatch: {}
+    # INTRADAY checks, hourly during NSE market hours (09:15-15:30 IST).
+    # These are display-only: they refresh the live progress bars and log a
+    # reading, but tracker.py --intraday never opens/closes a trade, since
+    # the price they see is a partial/still-forming day, not a final close.
+    - cron: "45 3 * * 1-5"   # 09:15 IST
+    - cron: "45 4 * * 1-5"   # 10:15 IST
+    - cron: "45 5 * * 1-5"   # 11:15 IST
+    - cron: "45 6 * * 1-5"   # 12:15 IST
+    - cron: "45 7 * * 1-5"   # 13:15 IST
+    - cron: "45 8 * * 1-5"   # 14:15 IST
+    - cron: "45 9 * * 1-5"   # 15:15 IST
+  workflow_dispatch:
+    inputs:
+      intraday:
+        description: "Run as an intraday (display-only) check instead of the official run"
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -30,8 +45,24 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
+      - name: Determine run mode
+        run: |
+          OFFICIAL_CRON="50 4 * * 1-5"
+          SCHEDULE="${{ github.event.schedule }}"
+          DISPATCH_INTRADAY="${{ github.event.inputs.intraday }}"
+          if [ -n "$SCHEDULE" ] && [ "$SCHEDULE" != "$OFFICIAL_CRON" ]; then
+            echo "INTRADAY_FLAG=--intraday" >> "$GITHUB_ENV"
+            echo "RUN_LABEL=Intraday check" >> "$GITHUB_ENV"
+          elif [ "$DISPATCH_INTRADAY" = "true" ]; then
+            echo "INTRADAY_FLAG=--intraday" >> "$GITHUB_ENV"
+            echo "RUN_LABEL=Intraday check (manual)" >> "$GITHUB_ENV"
+          else
+            echo "INTRADAY_FLAG=" >> "$GITHUB_ENV"
+            echo "RUN_LABEL=Official run" >> "$GITHUB_ENV"
+          fi
+
       - name: Run tracker
-        run: python tracker.py
+        run: python tracker.py $INTRADAY_FLAG
 
       - name: Commit results
         run: |
@@ -39,5 +70,5 @@ jobs:
           git config user.email "actions@github.com"
           git add signals_log.csv paper_trades.csv docs/data.json
           [ -d calls ] && git add calls/
-          git diff --cached --quiet || git commit -m "Daily tracker run $(date -u +%F)"
+          git diff --cached --quiet || git commit -m "$RUN_LABEL: $(date -u +%FT%H:%M)Z"
           git push

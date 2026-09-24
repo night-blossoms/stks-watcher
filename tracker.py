@@ -20,6 +20,7 @@ risk anything on it.
 import json
 import math
 import os
+import sys
 from datetime import datetime, date, timedelta
 
 import pandas as pd
@@ -33,8 +34,19 @@ TRADES_LOG = os.path.join(BASE_DIR, "paper_trades.csv")
 CALLS_DIR = os.path.join(BASE_DIR, "calls")
 DOCS_DATA_PATH = os.path.join(BASE_DIR, "docs", "data.json")
 
-SIGNAL_COLUMNS = ["run_date", "commodity", "commodity_pct_change", "window_days",
-                   "stock", "direction_rule", "threshold_pct", "triggered", "signal"]
+# Multi-day cumulative view: shows a slow multi-day grind (e.g. +2.5%/day for
+# 2 days) that never trips the calibrated 1-day threshold on any single day.
+# This is informational ONLY - it never opens a trade, only the 1-day check
+# does that. The threshold comparison here is a heuristic (sqrt-time scaling
+# of the 1-day threshold, the standard random-walk approximation for how
+# volatility grows with a longer window), not a separately calibrated rule.
+CUMULATIVE_WINDOW_DAYS = 3
+
+SIGNAL_COLUMNS = ["run_date", "run_timestamp", "is_intraday", "commodity",
+                   "commodity_pct_change", "window_days", "stock", "direction_rule",
+                   "threshold_pct", "triggered", "signal",
+                   "cumulative_pct_change", "cumulative_window_days",
+                   "cumulative_threshold_pct", "cumulative_progress"]
 TRADE_COLUMNS = ["id", "commodity", "stock", "signal", "entry_date", "entry_price",
                   "quantity", "position_value_inr", "hold_days", "exit_date", "exit_price",
                   "status", "pnl_pct", "pnl_inr", "horizon_tag", "signal_source"]
@@ -109,7 +121,8 @@ def write_call_file(row, rule_cfg):
     return path
 
 
-def evaluate_rules(rules, history, run_date):
+def evaluate_rules(rules, history, run_date, run_timestamp=None, is_intraday=False):
+    run_timestamp = run_timestamp or datetime.now().isoformat(timespec="minutes")
     signal_rows = []
     triggers = []  # (commodity, stock, signal, entry_price, hold_days, move_strength)
 
@@ -137,11 +150,20 @@ def evaluate_rules(rules, history, run_date):
                 else:  # negative relationship
                     signal = "SELL" if moved_up else "BUY"
 
+            cum_change = data_mod.latest_pct_change(history[symbol], CUMULATIVE_WINDOW_DAYS)
+            cum_threshold = round(threshold * (CUMULATIVE_WINDOW_DAYS ** 0.5), 3)
+            cum_progress = round(abs(cum_change) / cum_threshold, 3) if cum_change is not None else None
+
             signal_rows.append({
-                "run_date": run_date, "commodity": commodity,
+                "run_date": run_date, "run_timestamp": run_timestamp, "is_intraday": is_intraday,
+                "commodity": commodity,
                 "commodity_pct_change": round(pct_change, 3), "window_days": window_days,
                 "stock": stock, "direction_rule": direction, "threshold_pct": threshold,
                 "triggered": triggered, "signal": signal or "",
+                "cumulative_pct_change": round(cum_change, 3) if cum_change is not None else None,
+                "cumulative_window_days": CUMULATIVE_WINDOW_DAYS,
+                "cumulative_threshold_pct": cum_threshold,
+                "cumulative_progress": cum_progress,
             })
 
             if triggered:
@@ -273,27 +295,36 @@ def write_docs_data(trades_df, sizing, run_date, rules, signal_rows, signals_df)
     # a move approached/crossed the threshold, not just today's snapshot.
     # signals_log.csv has logged every evaluation, every day, since day one
     # (nothing throttled) - this was always there, just never surfaced.
-    HISTORY_LIMIT = 30
+    HISTORY_LIMIT = 80
     history_by_pair = {}
     if not signals_df.empty:
         sdf = signals_df.copy()
         sdf["run_date"] = sdf["run_date"].astype(str)
+        # older rows (before intraday tracking existed) have no run_timestamp;
+        # fall back to run_date so they still sort/display sensibly
+        sdf["run_timestamp"] = sdf.get("run_timestamp")
+        sdf["run_timestamp"] = sdf["run_timestamp"].where(sdf["run_timestamp"].notna(), sdf["run_date"])
+        sdf["is_intraday"] = sdf.get("is_intraday")
+        sdf["is_intraday"] = sdf["is_intraday"].fillna(False).astype(bool)
         for (commodity, stock), grp in sdf.groupby(["commodity", "stock"]):
-            # collapse multiple same-day runs (manual reruns, testing) down to
-            # that day's last reading, so history shows one point per day
-            grp = grp.sort_values("run_date").drop_duplicates("run_date", keep="last")
-            grp = grp.tail(HISTORY_LIMIT)
+            grp = grp.sort_values("run_timestamp").tail(HISTORY_LIMIT)
             rows = []
             for _, r in grp.iterrows():
                 move = r["commodity_pct_change"]
                 threshold = r["threshold_pct"]
                 progress = round(abs(move) / threshold, 3) if threshold else None
+                cum_change = r.get("cumulative_pct_change")
+                cum_progress = r.get("cumulative_progress")
                 rows.append({
                     "run_date": r["run_date"],
+                    "run_timestamp": r["run_timestamp"],
+                    "is_intraday": bool(r["is_intraday"]),
                     "commodity_pct_change": round(float(move), 3),
                     "threshold_pct": float(threshold),
                     "progress_to_threshold": progress,
                     "triggered": bool(r["triggered"]),
+                    "cumulative_pct_change": (None if pd.isna(cum_change) else round(float(cum_change), 3)),
+                    "cumulative_progress": (None if pd.isna(cum_progress) else round(float(cum_progress), 3)),
                 })
             history_by_pair[pair_id(commodity, stock)] = rows
 
@@ -304,6 +335,9 @@ def write_docs_data(trades_df, sizing, run_date, rules, signal_rows, signals_df)
             ev = latest_eval.get((commodity, stock))
             move = ev["commodity_pct_change"] if ev else None
             progress = round(abs(move) / cfg["threshold_pct"], 3) if move is not None else None
+            cum_change = ev.get("cumulative_pct_change") if ev else None
+            cum_progress = ev.get("cumulative_progress") if ev else None
+            heat = max(x for x in (progress, cum_progress, 0) if x is not None)
             rules_status.append({
                 "pair_id": pid, "commodity": commodity, "stock": stock,
                 "direction": cfg["direction"], "threshold_pct": cfg["threshold_pct"],
@@ -313,8 +347,15 @@ def write_docs_data(trades_df, sizing, run_date, rules, signal_rows, signals_df)
                 "horizon_tag": cfg.get("horizon_tag", ""),
                 "signal_source": cfg.get("signal_source", ""),
                 "latest_run_date": str(ev["run_date"]) if ev else None,
+                "latest_run_timestamp": ev.get("run_timestamp") if ev else None,
+                "latest_is_intraday": bool(ev.get("is_intraday")) if ev else False,
                 "latest_commodity_pct_change": move,
                 "progress_to_threshold": progress,
+                "cumulative_window_days": CUMULATIVE_WINDOW_DAYS,
+                "latest_cumulative_pct_change": cum_change,
+                "cumulative_threshold_pct": ev.get("cumulative_threshold_pct") if ev else None,
+                "cumulative_progress": cum_progress,
+                "heat_score": round(heat, 3),
                 "triggered_today": bool(ev["triggered"]) if ev else False,
                 "open_trade": open_by_pair.get(pid),
                 "signal_history": history_by_pair.get(pid, []),
@@ -349,13 +390,16 @@ def write_docs_data(trades_df, sizing, run_date, rules, signal_rows, signals_df)
 
 
 def main():
+    is_intraday = "--intraday" in sys.argv
     run_date = date.today()
-    print(f"[{datetime.now().isoformat(timespec='seconds')}] running tracker for {run_date}")
+    run_timestamp = datetime.now().isoformat(timespec="minutes")
+    tag = "[intraday check]" if is_intraday else "[official run]"
+    print(f"[{datetime.now().isoformat(timespec='seconds')}] {tag} running tracker for {run_date}")
 
     rules, sizing = load_rules()
     history = data_mod.fetch_all()
 
-    signal_rows, triggers = evaluate_rules(rules, history, run_date)
+    signal_rows, triggers = evaluate_rules(rules, history, run_date, run_timestamp, is_intraday)
 
     signals_df = load_csv(SIGNALS_LOG, SIGNAL_COLUMNS)
     signals_df = pd.concat([signals_df, pd.DataFrame(signal_rows)], ignore_index=True)
@@ -364,8 +408,12 @@ def main():
           f"({sum(1 for r in signal_rows if r['triggered'])} triggered)")
 
     trades_df = load_csv(TRADES_LOG, TRADE_COLUMNS)
-    trades_df = update_paper_trades(trades_df, triggers, run_date, sizing, rules)
-    trades_df.to_csv(TRADES_LOG, index=False)
+    if is_intraday:
+        print("intraday check — display only, no trades opened or closed "
+              "(only the official run mutates paper_trades.csv)")
+    else:
+        trades_df = update_paper_trades(trades_df, triggers, run_date, sizing, rules)
+        trades_df.to_csv(TRADES_LOG, index=False)
 
     open_count = (trades_df["status"] == "OPEN").sum() if not trades_df.empty else 0
     closed_today = trades_df[(trades_df["status"] == "CLOSED") &
@@ -378,7 +426,8 @@ def main():
                              "pnl_pct", "pnl_inr"]].to_string(index=False))
 
     if triggers:
-        print("\nnew signals this run:")
+        label = "threshold crossed intraday (not acted on until the official run)" if is_intraday else "new signals this run"
+        print(f"\n{label}:")
         for commodity, stock, signal, entry_price, hold_days, move_strength in triggers:
             print(f"  {commodity} -> {stock}: {signal} @ {entry_price:.2f} "
                   f"(hold {hold_days}d, move_strength {move_strength:.2f}x threshold)")

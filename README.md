@@ -85,10 +85,22 @@ when it closes (entry/exit price, qty, predicted vs actual hold, P&L).
 
 ## Running it automatically (GitHub Actions + Pages)
 
-`.github/workflows/daily-tracker.yml` runs `tracker.py` once every weekday
-at 08:45 IST (before NSE opens at 09:15), commits the updated
-`signals_log.csv` / `paper_trades.csv` / `calls/` / `docs/data.json` back to
-the repo, and that's it — no server to maintain.
+`.github/workflows/daily-tracker.yml` runs `tracker.py` on two kinds of
+schedule, committing the updated `signals_log.csv` / `paper_trades.csv` /
+`calls/` / `docs/data.json` back to the repo each time — no server to
+maintain:
+
+- **Official run, once daily at 10:20 IST** (`python tracker.py`) — the only
+  run that opens/closes paper trades. It reacts to the most recently
+  completed daily close, matching how every rule was calibrated (1-day
+  close-to-close moves).
+- **Intraday checks, hourly during market hours** (09:15-15:15 IST,
+  `python tracker.py --intraday`) — **display only**. These refresh the live
+  progress bars and log a reading, but never open or close a trade, since
+  the price they see is a partial/still-forming day, not a final close.
+  This is also what powers the multi-day **cumulative** reading (see below):
+  a slow grind that never trips the 1-day threshold on any single day still
+  shows up as "building" via its 3-day cumulative move.
 
 One-time setup after pushing this repo to GitHub:
 1. Settings → Actions → General → under "Workflow permissions" pick
@@ -96,15 +108,20 @@ One-time setup after pushing this repo to GitHub:
 2. Settings → Pages → Source: **Deploy from a branch** → Branch **main**,
    folder **/docs** → Save.
 3. Optionally Actions → "Daily commodity-stock tracker" → Run workflow, to
-   trigger it once manually instead of waiting for the schedule.
+   trigger it once manually instead of waiting for the schedule (check
+   "intraday" in the dropdown to test a display-only run).
 
 The published site (`docs/`) is a small 4-page static app, no build step:
-- **index.html** — every tracked commodity→stock pair, with a progress bar
-  showing how close today's commodity move is to that rule's trigger
-  threshold, plus a "watching / triggered today / position open" badge.
-  Click a pair for its full rule config, today's reading, its open position
-  (if any), and its past trades — plus one-click Google search links to that
-  stock's price chart and the commodity's current price.
+- **index.html** — every tracked commodity→stock pair, grouped into three
+  sections (🔥 Close to triggering / 📈 Building / 😴 Quiet) based on
+  whichever is further along: the calibrated 1-day move, or the informational
+  3-day cumulative move (heuristic sqrt-time-scaled threshold, not
+  independently calibrated). Each card shows both readings, a live/official
+  timestamp, and a "watching / triggered today / position open" badge. Click
+  a pair for its full rule config (including which analysis it came from),
+  today's reading, its full day-by-day/hour-by-hour history, its open
+  position (if any), and its past trades — plus one-click Google search
+  links to that stock's price chart and the commodity's current price.
 - **active.html** — every currently OPEN paper trade: entry price/qty, days
   held so far vs. planned hold, predicted exit date.
 - **history.html** — every CLOSED trade, a per-pair accuracy/P&L breakdown,

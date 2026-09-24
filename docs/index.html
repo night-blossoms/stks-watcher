@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Commodity Signal Tracker</title>
-<link rel="stylesheet" href="style.css?v=3">
+<link rel="stylesheet" href="style.css?v=4">
 </head>
 <body>
   <div class="wrap">
@@ -12,7 +12,7 @@
     <h1>Tracked pairs</h1>
     <p class="subtitle">Gold / silver / copper lag-correlation rules — dummy paper trading only</p>
 
-    <div class="card-list" id="pairs"></div>
+    <div id="sections"></div>
 
     <footer id="footer"></footer>
   </div>
@@ -29,15 +29,26 @@ async function main() {
     return;
   }
 
-  const container = document.getElementById('pairs');
-  container.innerHTML = data.rules_status.map(r => {
-    const pct = r.progress_to_threshold == null ? 0 : Math.min(r.progress_to_threshold, 1) * 100;
-    const hot = r.triggered_today || (r.progress_to_threshold != null && r.progress_to_threshold >= 0.8);
-    const moveLabel = r.latest_commodity_pct_change == null ? 'no data yet' :
-      `${r.commodity} moved ${Tracker.fmtPct(r.latest_commodity_pct_change)} (threshold ${r.threshold_pct}%)`;
+  function barRow(label, pctChange, threshold, progress) {
+    if (pctChange == null) return `<div class="progress-label">${label}: no data yet</div>`;
+    const pct = progress == null ? 0 : Math.min(progress, 1) * 100;
+    const hot = progress != null && progress >= 0.8;
+    return `
+      <div class="progress-row">
+        <div class="progress-track"><div class="progress-fill ${hot ? 'hot' : ''}" style="width:${pct.toFixed(0)}%"></div></div>
+        <div class="progress-label">${label}: ${Tracker.fmtPct(pctChange)} (thr ${threshold}%)${progress != null ? ' · ' + (progress * 100).toFixed(0) + '%' : ''}</div>
+      </div>`;
+  }
+
+  function renderCard(r) {
+    const moveLabel1d = barRow('1-day move', r.latest_commodity_pct_change, r.threshold_pct, r.progress_to_threshold);
+    const moveLabelCum = barRow(`${r.cumulative_window_days}-day cumulative`, r.latest_cumulative_pct_change,
+      r.cumulative_threshold_pct, r.cumulative_progress);
     let stageBadge = '<span class="badge status-open">watching</span>';
     if (r.open_trade) stageBadge = '<span class="badge status-open">position open</span>';
     else if (r.triggered_today) stageBadge = '<span class="badge buy">triggered today</span>';
+    const asOf = r.latest_run_timestamp ? Tracker.fmtIST(r.latest_run_timestamp) : (r.latest_run_date ?? '—');
+    const liveTag = r.latest_is_intraday ? ' · <span class="badge status-open">live</span>' : '';
 
     return `
       <a class="card" href="detail.html?pair=${encodeURIComponent(r.pair_id)}">
@@ -45,10 +56,31 @@ async function main() {
           <span class="card-title">${r.commodity} → ${r.stock}</span>
           ${stageBadge}
         </div>
-        <div class="progress-track"><div class="progress-fill ${hot ? 'hot' : ''}" style="width:${pct.toFixed(0)}%"></div></div>
-        <div class="progress-label">${moveLabel} · as of ${r.latest_run_date ?? '—'}</div>
+        ${moveLabel1d}
+        ${moveLabelCum}
+        <div class="progress-label">as of ${asOf}${liveTag}</div>
       </a>`;
-  }).join('');
+  }
+
+  const sections = [
+    { key: 'hot', title: '🔥 Close to triggering', note: 'either the 1-day move or the multi-day cumulative move is at 70%+ of threshold' },
+    { key: 'building', title: '📈 Building', note: '30-70% of the way there, on either reading' },
+    { key: 'quiet', title: '😴 Quiet', note: 'under 30% on both readings' },
+  ];
+  const bucket = r => r.heat_score >= 0.7 ? 'hot' : (r.heat_score >= 0.3 ? 'building' : 'quiet');
+  const grouped = { hot: [], building: [], quiet: [] };
+  for (const r of data.rules_status) grouped[bucket(r)].push(r);
+  for (const key of Object.keys(grouped)) grouped[key].sort((a, b) => b.heat_score - a.heat_score);
+
+  document.getElementById('sections').innerHTML = sections.map(s => `
+    <section>
+      <h2>${s.title} (${grouped[s.key].length})</h2>
+      <p class="subtitle">${s.note}</p>
+      <div class="card-list">${grouped[s.key].map(renderCard).join('') || '<p class="empty">None right now.</p>'}</div>
+    </section>
+  `).join('') + `
+    <p class="subtitle">Cumulative reading uses a heuristic scaled threshold (1-day threshold × √window), not an
+    independently calibrated rule — informational only, it never opens a trade on its own.</p>`;
 
   document.getElementById('footer').innerHTML = `Last run: ${Tracker.fmtIST(data.generated_at)}`;
 }
