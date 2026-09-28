@@ -1,0 +1,27 @@
+{
+  "id": 1,
+  "commodity": "gold",
+  "stock": "MUTHOOTFIN.NS",
+  "signal": "SELL",
+  "trigger_date": "2026-09-28",
+  "entry_price": 2779.5,
+  "quantity": 2.5033,
+  "position_value_inr": 6957.96,
+  "hold_days": 3,
+  "predicted_exit_date": "2026-10-01",
+  "status": "OPEN",
+  "exit_date": null,
+  "exit_price": null,
+  "pnl_pct": null,
+  "pnl_inr": null,
+  "horizon_tag": "long_horizon",
+  "signal_source": "baseline_pearson",
+  "rule": {
+    "threshold_pct": 1.5,
+    "window_days": 1,
+    "lag_days": 1,
+    "observed_corr": 0.254,
+    "note": "peak at h5 but half2 turns negative by h6 - exit early"
+  },
+  "disclaimer": "Paper trade only, no real money. Entry/exit prices are the latest available daily close from free EOD data (yfinance), not a live intraday fill."
+}
