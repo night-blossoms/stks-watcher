@@ -1,2 +1,2 @@
 id,commodity,stock,signal,entry_date,entry_price,quantity,position_value_inr,hold_days,exit_date,exit_price,status,pnl_pct,pnl_inr,horizon_tag,signal_source
-1,gold,MUTHOOTFIN.NS,SELL,2026-09-28,2779.5,2.5033,6957.96,3,,,OPEN,,,long_horizon,baseline_pearson
+1,gold,MUTHOOTFIN.NS,SELL,2026-09-28,2779.5,2.5033,6957.96,3,2026-10-01,2738.1,CLOSED,1.49,103.64,long_horizon,baseline_pearson
