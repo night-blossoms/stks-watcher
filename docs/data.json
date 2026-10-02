@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-02T03:56:29",
+  "generated_at": "2026-10-02T04:55:12",
   "run_date": "2026-10-02",
   "paper_capital_inr": 100000,
   "summary": {
@@ -26,15 +26,15 @@
       "horizon_tag": "long_horizon",
       "signal_source": "baseline_pearson",
       "latest_run_date": "2026-10-02",
-      "latest_run_timestamp": "2026-10-02T03:56",
+      "latest_run_timestamp": "2026-10-02T04:55",
       "latest_is_intraday": true,
-      "latest_commodity_pct_change": 0.356,
-      "progress_to_threshold": 0.237,
+      "latest_commodity_pct_change": 0.25,
+      "progress_to_threshold": 0.167,
       "cumulative_window_days": 3,
-      "latest_cumulative_pct_change": 0.796,
+      "latest_cumulative_pct_change": 0.792,
       "cumulative_threshold_pct": 2.598,
-      "cumulative_progress": 0.307,
-      "heat_score": 0.307,
+      "cumulative_progress": 0.305,
+      "heat_score": 0.305,
       "triggered_today": false,
       "open_trade": null,
       "signal_history": [
@@ -620,6 +620,17 @@
           "triggered": false,
           "cumulative_pct_change": 0.796,
           "cumulative_progress": 0.307
+        },
+        {
+          "run_date": "2026-10-02",
+          "run_timestamp": "2026-10-02T04:55",
+          "is_intraday": true,
+          "commodity_pct_change": 0.25,
+          "threshold_pct": 1.5,
+          "progress_to_threshold": 0.167,
+          "triggered": false,
+          "cumulative_pct_change": 0.792,
+          "cumulative_progress": 0.305
         }
       ]
     },
@@ -637,15 +648,15 @@
       "horizon_tag": "long_horizon",
       "signal_source": "baseline_pearson",
       "latest_run_date": "2026-10-02",
-      "latest_run_timestamp": "2026-10-02T03:56",
+      "latest_run_timestamp": "2026-10-02T04:55",
       "latest_is_intraday": true,
-      "latest_commodity_pct_change": 2.108,
-      "progress_to_threshold": 0.703,
+      "latest_commodity_pct_change": 1.309,
+      "progress_to_threshold": 0.436,
       "cumulative_window_days": 3,
-      "latest_cumulative_pct_change": 0.237,
+      "latest_cumulative_pct_change": 1.404,
       "cumulative_threshold_pct": 5.196,
-      "cumulative_progress": 0.046,
-      "heat_score": 0.703,
+      "cumulative_progress": 0.27,
+      "heat_score": 0.436,
       "triggered_today": false,
       "open_trade": null,
       "signal_history": [
@@ -1231,6 +1242,17 @@
           "triggered": false,
           "cumulative_pct_change": 0.237,
           "cumulative_progress": 0.046
+        },
+        {
+          "run_date": "2026-10-02",
+          "run_timestamp": "2026-10-02T04:55",
+          "is_intraday": true,
+          "commodity_pct_change": 1.309,
+          "threshold_pct": 3.0,
+          "progress_to_threshold": 0.436,
+          "triggered": false,
+          "cumulative_pct_change": 1.404,
+          "cumulative_progress": 0.27
         }
       ]
     },
@@ -1248,15 +1270,15 @@
       "horizon_tag": "long_horizon",
       "signal_source": "baseline_pearson",
       "latest_run_date": "2026-10-02",
-      "latest_run_timestamp": "2026-10-02T03:56",
+      "latest_run_timestamp": "2026-10-02T04:55",
       "latest_is_intraday": true,
-      "latest_commodity_pct_change": 2.108,
-      "progress_to_threshold": 0.703,
+      "latest_commodity_pct_change": 1.309,
+      "progress_to_threshold": 0.436,
       "cumulative_window_days": 3,
-      "latest_cumulative_pct_change": 0.237,
+      "latest_cumulative_pct_change": 1.404,
       "cumulative_threshold_pct": 5.196,
-      "cumulative_progress": 0.046,
-      "heat_score": 0.703,
+      "cumulative_progress": 0.27,
+      "heat_score": 0.436,
       "triggered_today": false,
       "open_trade": null,
       "signal_history": [
@@ -1842,6 +1864,17 @@
           "triggered": false,
           "cumulative_pct_change": 0.237,
           "cumulative_progress": 0.046
+        },
+        {
+          "run_date": "2026-10-02",
+          "run_timestamp": "2026-10-02T04:55",
+          "is_intraday": true,
+          "commodity_pct_change": 1.309,
+          "threshold_pct": 3.0,
+          "progress_to_threshold": 0.436,
+          "triggered": false,
+          "cumulative_pct_change": 1.404,
+          "cumulative_progress": 0.27
         }
       ]
     },
@@ -1859,15 +1892,15 @@
       "horizon_tag": "short_horizon",
       "signal_source": "baseline_pearson",
       "latest_run_date": "2026-10-02",
-      "latest_run_timestamp": "2026-10-02T03:56",
+      "latest_run_timestamp": "2026-10-02T04:55",
       "latest_is_intraday": true,
-      "latest_commodity_pct_change": -0.008,
-      "progress_to_threshold": 0.004,
+      "latest_commodity_pct_change": 1.496,
+      "progress_to_threshold": 0.748,
       "cumulative_window_days": 3,
-      "latest_cumulative_pct_change": -0.114,
+      "latest_cumulative_pct_change": 0.543,
       "cumulative_threshold_pct": 3.464,
-      "cumulative_progress": 0.033,
-      "heat_score": 0.033,
+      "cumulative_progress": 0.157,
+      "heat_score": 0.748,
       "triggered_today": false,
       "open_trade": null,
       "signal_history": [
@@ -2453,6 +2486,17 @@
           "triggered": false,
           "cumulative_pct_change": -0.114,
           "cumulative_progress": 0.033
+        },
+        {
+          "run_date": "2026-10-02",
+          "run_timestamp": "2026-10-02T04:55",
+          "is_intraday": true,
+          "commodity_pct_change": 1.496,
+          "threshold_pct": 2.0,
+          "progress_to_threshold": 0.748,
+          "triggered": false,
+          "cumulative_pct_change": 0.543,
+          "cumulative_progress": 0.157
         }
       ]
     },
@@ -2470,15 +2514,15 @@
       "horizon_tag": "long_horizon",
       "signal_source": "baseline_pearson",
       "latest_run_date": "2026-10-02",
-      "latest_run_timestamp": "2026-10-02T03:56",
+      "latest_run_timestamp": "2026-10-02T04:55",
       "latest_is_intraday": true,
-      "latest_commodity_pct_change": -0.008,
-      "progress_to_threshold": 0.004,
+      "latest_commodity_pct_change": 1.496,
+      "progress_to_threshold": 0.748,
       "cumulative_window_days": 3,
-      "latest_cumulative_pct_change": -0.114,
+      "latest_cumulative_pct_change": 0.543,
       "cumulative_threshold_pct": 3.464,
-      "cumulative_progress": 0.033,
-      "heat_score": 0.033,
+      "cumulative_progress": 0.157,
+      "heat_score": 0.748,
       "triggered_today": false,
       "open_trade": null,
       "signal_history": [
@@ -3064,6 +3108,17 @@
           "triggered": false,
           "cumulative_pct_change": -0.114,
           "cumulative_progress": 0.033
+        },
+        {
+          "run_date": "2026-10-02",
+          "run_timestamp": "2026-10-02T04:55",
+          "is_intraday": true,
+          "commodity_pct_change": 1.496,
+          "threshold_pct": 2.0,
+          "progress_to_threshold": 0.748,
+          "triggered": false,
+          "cumulative_pct_change": 0.543,
+          "cumulative_progress": 0.157
         }
       ]
     },
@@ -3081,15 +3136,15 @@
       "horizon_tag": "long_horizon",
       "signal_source": "baseline_pearson",
       "latest_run_date": "2026-10-02",
-      "latest_run_timestamp": "2026-10-02T03:56",
+      "latest_run_timestamp": "2026-10-02T04:55",
       "latest_is_intraday": true,
-      "latest_commodity_pct_change": -0.008,
-      "progress_to_threshold": 0.004,
+      "latest_commodity_pct_change": 1.496,
+      "progress_to_threshold": 0.748,
       "cumulative_window_days": 3,
-      "latest_cumulative_pct_change": -0.114,
+      "latest_cumulative_pct_change": 0.543,
       "cumulative_threshold_pct": 3.464,
-      "cumulative_progress": 0.033,
-      "heat_score": 0.033,
+      "cumulative_progress": 0.157,
+      "heat_score": 0.748,
       "triggered_today": false,
       "open_trade": null,
       "signal_history": [
@@ -3675,6 +3730,17 @@
           "triggered": false,
           "cumulative_pct_change": -0.114,
           "cumulative_progress": 0.033
+        },
+        {
+          "run_date": "2026-10-02",
+          "run_timestamp": "2026-10-02T04:55",
+          "is_intraday": true,
+          "commodity_pct_change": 1.496,
+          "threshold_pct": 2.0,
+          "progress_to_threshold": 0.748,
+          "triggered": false,
+          "cumulative_pct_change": 0.543,
+          "cumulative_progress": 0.157
         }
       ]
     }
