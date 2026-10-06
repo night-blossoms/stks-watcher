@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-10-05T09:56:15",
-  "run_date": "2026-10-05",
+  "generated_at": "2026-10-06T03:57:48",
+  "run_date": "2026-10-06",
   "paper_capital_inr": 100000,
   "summary": {
     "open_positions": 0,
@@ -25,16 +25,16 @@
       "note": "peak at h5 but half2 turns negative by h6 - exit early",
       "horizon_tag": "long_horizon",
       "signal_source": "baseline_pearson",
-      "latest_run_date": "2026-10-05",
-      "latest_run_timestamp": "2026-10-05T09:56",
+      "latest_run_date": "2026-10-06",
+      "latest_run_timestamp": "2026-10-06T03:57",
       "latest_is_intraday": true,
-      "latest_commodity_pct_change": 0.569,
-      "progress_to_threshold": 0.379,
+      "latest_commodity_pct_change": -0.108,
+      "progress_to_threshold": 0.072,
       "cumulative_window_days": 3,
-      "latest_cumulative_pct_change": -0.017,
+      "latest_cumulative_pct_change": -0.69,
       "cumulative_threshold_pct": 2.598,
-      "cumulative_progress": 0.006,
-      "heat_score": 0.379,
+      "cumulative_progress": 0.266,
+      "heat_score": 0.266,
       "triggered_today": false,
       "open_trade": null,
       "signal_history": [
@@ -785,6 +785,17 @@
           "triggered": false,
           "cumulative_pct_change": -0.017,
           "cumulative_progress": 0.006
+        },
+        {
+          "run_date": "2026-10-06",
+          "run_timestamp": "2026-10-06T03:57",
+          "is_intraday": true,
+          "commodity_pct_change": -0.108,
+          "threshold_pct": 1.5,
+          "progress_to_threshold": 0.072,
+          "triggered": false,
+          "cumulative_pct_change": -0.69,
+          "cumulative_progress": 0.266
         }
       ]
     },
@@ -801,17 +812,17 @@
       "note": "peak at h3, half2 decays after h6",
       "horizon_tag": "long_horizon",
       "signal_source": "baseline_pearson",
-      "latest_run_date": "2026-10-05",
-      "latest_run_timestamp": "2026-10-05T09:56",
+      "latest_run_date": "2026-10-06",
+      "latest_run_timestamp": "2026-10-06T03:57",
       "latest_is_intraday": true,
-      "latest_commodity_pct_change": 3.148,
-      "progress_to_threshold": 1.049,
+      "latest_commodity_pct_change": 1.822,
+      "progress_to_threshold": 0.607,
       "cumulative_window_days": 3,
-      "latest_cumulative_pct_change": 2.94,
+      "latest_cumulative_pct_change": 1.617,
       "cumulative_threshold_pct": 5.196,
-      "cumulative_progress": 0.566,
-      "heat_score": 1.049,
-      "triggered_today": true,
+      "cumulative_progress": 0.311,
+      "heat_score": 0.607,
+      "triggered_today": false,
       "open_trade": null,
       "signal_history": [
         {
@@ -1561,6 +1572,17 @@
           "triggered": true,
           "cumulative_pct_change": 2.94,
           "cumulative_progress": 0.566
+        },
+        {
+          "run_date": "2026-10-06",
+          "run_timestamp": "2026-10-06T03:57",
+          "is_intraday": true,
+          "commodity_pct_change": 1.822,
+          "threshold_pct": 3.0,
+          "progress_to_threshold": 0.607,
+          "triggered": false,
+          "cumulative_pct_change": 1.617,
+          "cumulative_progress": 0.311
         }
       ]
     },
@@ -1577,17 +1599,17 @@
       "note": "most durable pair found - keeps growing to h7+ in both halves",
       "horizon_tag": "long_horizon",
       "signal_source": "baseline_pearson",
-      "latest_run_date": "2026-10-05",
-      "latest_run_timestamp": "2026-10-05T09:56",
+      "latest_run_date": "2026-10-06",
+      "latest_run_timestamp": "2026-10-06T03:57",
       "latest_is_intraday": true,
-      "latest_commodity_pct_change": 3.148,
-      "progress_to_threshold": 1.049,
+      "latest_commodity_pct_change": 1.822,
+      "progress_to_threshold": 0.607,
       "cumulative_window_days": 3,
-      "latest_cumulative_pct_change": 2.94,
+      "latest_cumulative_pct_change": 1.617,
       "cumulative_threshold_pct": 5.196,
-      "cumulative_progress": 0.566,
-      "heat_score": 1.049,
-      "triggered_today": true,
+      "cumulative_progress": 0.311,
+      "heat_score": 0.607,
+      "triggered_today": false,
       "open_trade": null,
       "signal_history": [
         {
@@ -2337,6 +2359,17 @@
           "triggered": true,
           "cumulative_pct_change": 2.94,
           "cumulative_progress": 0.566
+        },
+        {
+          "run_date": "2026-10-06",
+          "run_timestamp": "2026-10-06T03:57",
+          "is_intraday": true,
+          "commodity_pct_change": 1.822,
+          "threshold_pct": 3.0,
+          "progress_to_threshold": 0.607,
+          "triggered": false,
+          "cumulative_pct_change": 1.617,
+          "cumulative_progress": 0.311
         }
       ]
     },
@@ -2353,17 +2386,17 @@
       "note": "fast peak at h2, stable both halves, mild erosion after h7",
       "horizon_tag": "short_horizon",
       "signal_source": "baseline_pearson",
-      "latest_run_date": "2026-10-05",
-      "latest_run_timestamp": "2026-10-05T09:56",
+      "latest_run_date": "2026-10-06",
+      "latest_run_timestamp": "2026-10-06T03:57",
       "latest_is_intraday": true,
-      "latest_commodity_pct_change": 1.533,
-      "progress_to_threshold": 0.766,
+      "latest_commodity_pct_change": 2.626,
+      "progress_to_threshold": 1.313,
       "cumulative_window_days": 3,
-      "latest_cumulative_pct_change": 0.495,
+      "latest_cumulative_pct_change": 1.578,
       "cumulative_threshold_pct": 3.464,
-      "cumulative_progress": 0.143,
-      "heat_score": 0.766,
-      "triggered_today": false,
+      "cumulative_progress": 0.456,
+      "heat_score": 1.313,
+      "triggered_today": true,
       "open_trade": null,
       "signal_history": [
         {
@@ -3113,6 +3146,17 @@
           "triggered": false,
           "cumulative_pct_change": 0.495,
           "cumulative_progress": 0.143
+        },
+        {
+          "run_date": "2026-10-06",
+          "run_timestamp": "2026-10-06T03:57",
+          "is_intraday": true,
+          "commodity_pct_change": 2.626,
+          "threshold_pct": 2.0,
+          "progress_to_threshold": 1.313,
+          "triggered": true,
+          "cumulative_pct_change": 1.578,
+          "cumulative_progress": 0.456
         }
       ]
     },
@@ -3129,17 +3173,17 @@
       "note": "reverses hard after h7 in both halves - exit early",
       "horizon_tag": "long_horizon",
       "signal_source": "baseline_pearson",
-      "latest_run_date": "2026-10-05",
-      "latest_run_timestamp": "2026-10-05T09:56",
+      "latest_run_date": "2026-10-06",
+      "latest_run_timestamp": "2026-10-06T03:57",
       "latest_is_intraday": true,
-      "latest_commodity_pct_change": 1.533,
-      "progress_to_threshold": 0.766,
+      "latest_commodity_pct_change": 2.626,
+      "progress_to_threshold": 1.313,
       "cumulative_window_days": 3,
-      "latest_cumulative_pct_change": 0.495,
+      "latest_cumulative_pct_change": 1.578,
       "cumulative_threshold_pct": 3.464,
-      "cumulative_progress": 0.143,
-      "heat_score": 0.766,
-      "triggered_today": false,
+      "cumulative_progress": 0.456,
+      "heat_score": 1.313,
+      "triggered_today": true,
       "open_trade": null,
       "signal_history": [
         {
@@ -3889,6 +3933,17 @@
           "triggered": false,
           "cumulative_pct_change": 0.495,
           "cumulative_progress": 0.143
+        },
+        {
+          "run_date": "2026-10-06",
+          "run_timestamp": "2026-10-06T03:57",
+          "is_intraday": true,
+          "commodity_pct_change": 2.626,
+          "threshold_pct": 2.0,
+          "progress_to_threshold": 1.313,
+          "triggered": true,
+          "cumulative_pct_change": 1.578,
+          "cumulative_progress": 0.456
         }
       ]
     },
@@ -3905,17 +3960,17 @@
       "note": "weakest of the six, decays after h7",
       "horizon_tag": "long_horizon",
       "signal_source": "baseline_pearson",
-      "latest_run_date": "2026-10-05",
-      "latest_run_timestamp": "2026-10-05T09:56",
+      "latest_run_date": "2026-10-06",
+      "latest_run_timestamp": "2026-10-06T03:57",
       "latest_is_intraday": true,
-      "latest_commodity_pct_change": 1.533,
-      "progress_to_threshold": 0.766,
+      "latest_commodity_pct_change": 2.626,
+      "progress_to_threshold": 1.313,
       "cumulative_window_days": 3,
-      "latest_cumulative_pct_change": 0.495,
+      "latest_cumulative_pct_change": 1.578,
       "cumulative_threshold_pct": 3.464,
-      "cumulative_progress": 0.143,
-      "heat_score": 0.766,
-      "triggered_today": false,
+      "cumulative_progress": 0.456,
+      "heat_score": 1.313,
+      "triggered_today": true,
       "open_trade": null,
       "signal_history": [
         {
@@ -4665,6 +4720,17 @@
           "triggered": false,
           "cumulative_pct_change": 0.495,
           "cumulative_progress": 0.143
+        },
+        {
+          "run_date": "2026-10-06",
+          "run_timestamp": "2026-10-06T03:57",
+          "is_intraday": true,
+          "commodity_pct_change": 2.626,
+          "threshold_pct": 2.0,
+          "progress_to_threshold": 1.313,
+          "triggered": true,
+          "cumulative_pct_change": 1.578,
+          "cumulative_progress": 0.456
         }
       ]
     }
