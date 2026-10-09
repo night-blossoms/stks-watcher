@@ -551,3 +551,9 @@ run_date,commodity,commodity_pct_change,window_days,stock,direction_rule,thresho
 2026-10-08,copper,1.129,1,HINDALCO.NS,positive,2.0,False,,2026-10-08T09:56,True,1.298,3.0,3.464,0.375
 2026-10-08,copper,1.129,1,HINDCOPPER.NS,positive,2.0,False,,2026-10-08T09:56,True,1.298,3.0,3.464,0.375
 2026-10-08,copper,1.129,1,VEDL.NS,positive,2.0,False,,2026-10-08T09:56,True,1.298,3.0,3.464,0.375
+2026-10-09,gold,1.464,1,MUTHOOTFIN.NS,positive,1.5,False,,2026-10-09T03:59,True,1.071,3.0,2.598,0.412
+2026-10-09,silver,0.845,1,HINDZINC.NS,positive,3.0,False,,2026-10-09T03:59,True,-0.762,3.0,5.196,0.147
+2026-10-09,silver,0.845,1,VEDL.NS,positive,3.0,False,,2026-10-09T03:59,True,-0.762,3.0,5.196,0.147
+2026-10-09,copper,0.667,1,HINDALCO.NS,positive,2.0,False,,2026-10-09T03:59,True,0.835,3.0,3.464,0.241
+2026-10-09,copper,0.667,1,HINDCOPPER.NS,positive,2.0,False,,2026-10-09T03:59,True,0.835,3.0,3.464,0.241
+2026-10-09,copper,0.667,1,VEDL.NS,positive,2.0,False,,2026-10-09T03:59,True,0.835,3.0,3.464,0.241
