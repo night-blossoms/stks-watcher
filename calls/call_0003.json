@@ -1,0 +1,27 @@
+{
+  "id": 3,
+  "commodity": "silver",
+  "stock": "VEDL.NS",
+  "signal": "SELL",
+  "trigger_date": "2026-10-30",
+  "entry_price": 237.9,
+  "quantity": 22.7659,
+  "position_value_inr": 5416.01,
+  "hold_days": 7,
+  "predicted_exit_date": "2026-11-06",
+  "status": "OPEN",
+  "exit_date": null,
+  "exit_price": null,
+  "pnl_pct": null,
+  "pnl_inr": null,
+  "horizon_tag": "long_horizon",
+  "signal_source": "baseline_pearson",
+  "rule": {
+    "threshold_pct": 3.0,
+    "window_days": 1,
+    "lag_days": 1,
+    "observed_corr": 0.153,
+    "note": "most durable pair found - keeps growing to h7+ in both halves"
+  },
+  "disclaimer": "Paper trade only, no real money. Entry/exit prices are the latest available daily close from free EOD data (yfinance), not a live intraday fill."
+}

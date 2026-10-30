@@ -1,0 +1,27 @@
+{
+  "id": 2,
+  "commodity": "silver",
+  "stock": "HINDZINC.NS",
+  "signal": "SELL",
+  "trigger_date": "2026-10-30",
+  "entry_price": 505.8,
+  "quantity": 10.7078,
+  "position_value_inr": 5416.01,
+  "hold_days": 3,
+  "predicted_exit_date": "2026-11-02",
+  "status": "OPEN",
+  "exit_date": null,
+  "exit_price": null,
+  "pnl_pct": null,
+  "pnl_inr": null,
+  "horizon_tag": "long_horizon",
+  "signal_source": "baseline_pearson",
+  "rule": {
+    "threshold_pct": 3.0,
+    "window_days": 1,
+    "lag_days": 1,
+    "observed_corr": 0.266,
+    "note": "peak at h3, half2 decays after h6"
+  },
+  "disclaimer": "Paper trade only, no real money. Entry/exit prices are the latest available daily close from free EOD data (yfinance), not a live intraday fill."
+}
