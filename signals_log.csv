@@ -2075,3 +2075,9 @@ run_date,commodity,commodity_pct_change,window_days,stock,direction_rule,thresho
 2026-11-26,copper,2.747,1,HINDALCO.NS,positive,2.0,True,BUY,2026-11-26T13:11,True,-2.63,3.0,3.464,0.759
 2026-11-26,copper,2.747,1,HINDCOPPER.NS,positive,2.0,True,BUY,2026-11-26T13:11,True,-2.63,3.0,3.464,0.759
 2026-11-26,copper,2.747,1,VEDL.NS,positive,2.0,True,BUY,2026-11-26T13:11,True,-2.63,3.0,3.464,0.759
+2026-11-26,gold,1.81,1,MUTHOOTFIN.NS,positive,1.5,True,BUY,2026-11-26T14:28,True,-1.413,3.0,2.598,0.544
+2026-11-26,silver,4.227,1,HINDZINC.NS,positive,3.0,True,BUY,2026-11-26T14:28,True,-3.249,3.0,5.196,0.625
+2026-11-26,silver,4.227,1,VEDL.NS,positive,3.0,True,BUY,2026-11-26T14:28,True,-3.249,3.0,5.196,0.625
+2026-11-26,copper,2.55,1,HINDALCO.NS,positive,2.0,True,BUY,2026-11-26T14:28,True,-2.817,3.0,3.464,0.813
+2026-11-26,copper,2.55,1,HINDCOPPER.NS,positive,2.0,True,BUY,2026-11-26T14:28,True,-2.817,3.0,3.464,0.813
+2026-11-26,copper,2.55,1,VEDL.NS,positive,2.0,True,BUY,2026-11-26T14:28,True,-2.817,3.0,3.464,0.813
